@@ -22,9 +22,9 @@ Build:
     - npm install
   script:
     - npm run build --prod
-  only:
-    changes:
-      - "src/*"
+  # only:
+  #   changes:
+  #     - "src/*"
 
 Docker_build:
   image: docker:18.09
@@ -44,39 +44,39 @@ Docker_build:
   #    - "Dockerfile"
   #    - ".gitlab-ci.yml"
 
-# Deploy_to_Kubernetes:
-#   stage: deploy_to_k8s
-#   image: google/cloud-sdk
-#   script:
-#     - kubectl version
-#     - ensure_namespace
-#     - sed_files
-#     - kubectl apply -f k8s/
-#   environment:
-#     name: production
-#     url: https://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
-#   only:
-#     - master
-#   when: manual
+Deploy_to_Kubernetes:
+  stage: deploy_to_k8s
+  image: google/cloud-sdk
+  script:
+    - kubectl version
+    - ensure_namespace
+    - sed_files
+    - kubectl apply -f k8s/
+  environment:
+    name: production
+    url: https://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+  only:
+    - master
+  when: manual
 
-# .helper_functions: &helper_functions_template |
-#   function sed_files() {
-#     echo "Applying SED on Deployment, Service and Ingress yaml file"
-#     sed -i "s/__CI_ENVIRONMENT_SLUG__/${CI_ENVIRONMENT_SLUG}/" k8s/*.yml
-#     sed -i "s/__CI_PROJECT_PATH_SLUG__/${CI_PROJECT_PATH_SLUG}/" k8s/*.yml
-#     sed -i "s/__CI_PROJECT_NAME__/${CI_PROJECT_NAME}/" k8s/*.yml
-#     sed -i "s/__CI_ENVIRONMENT_SLUG__/${CI_ENVIRONMENT_SLUG}/" k8s/*.yml
-#     sed -i "s~__CI_REGISTRY_IMAGE__~${CI_REGISTRY_IMAGE}~" k8s/*.yml
-#     sed -i "s/__KUBE_INGRESS_BASE_DOMAIN__/${KUBE_INGRESS_BASE_DOMAIN}/" k8s/*.yml
-#     sed -i "s/__VERSION__/${CI_COMMIT_SHORT_SHA}/" k8s/*.yml
-#   }
+.helper_functions: &helper_functions_template |
+  function sed_files() {
+    echo "Applying SED on Deployment, Service and Ingress yaml file"
+    sed -i "s/__CI_ENVIRONMENT_SLUG__/${CI_ENVIRONMENT_SLUG}/" k8s/*.yml
+    sed -i "s/__CI_PROJECT_PATH_SLUG__/${CI_PROJECT_PATH_SLUG}/" k8s/*.yml
+    sed -i "s/__CI_PROJECT_NAME__/${CI_PROJECT_NAME}/" k8s/*.yml
+    sed -i "s/__CI_ENVIRONMENT_SLUG__/${CI_ENVIRONMENT_SLUG}/" k8s/*.yml
+    sed -i "s~__CI_REGISTRY_IMAGE__~${CI_REGISTRY_IMAGE}~" k8s/*.yml
+    sed -i "s/__KUBE_INGRESS_BASE_DOMAIN__/${KUBE_INGRESS_BASE_DOMAIN}/" k8s/*.yml
+    sed -i "s/__VERSION__/${CI_COMMIT_SHORT_SHA}/" k8s/*.yml
+  }
 
-#   function ensure_namespace() {
-#     echo "Setting default namespace to: $KUBE_NAMESPACE ..."
-#     kubectl get namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
-#     kubectl config set-context --current --namespace="$KUBE_NAMESPACE"
-#   }
+  function ensure_namespace() {
+    echo "Setting default namespace to: $KUBE_NAMESPACE ..."
+    kubectl get namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+    kubectl config set-context --current --namespace="$KUBE_NAMESPACE"
+  }
 
-# before_script:
-#   - *helper_functions_template
+before_script:
+  - *helper_functions_template
 

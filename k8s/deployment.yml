@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: angular-__CI_PROJECT_NAME__
+  name: angular
+  annotations:
+    app.gitlab.com/app: __CI_PROJECT_PATH_SLUG__
+    app.gitlab.com/env: __CI_ENVIRONMENT_SLUG__
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: angular-__CI_PROJECT_NAME__
+  template:
+    metadata:
+      labels:
+        app: angular-__CI_PROJECT_NAME__
+      annotations:
+        app.gitlab.com/app: __CI_PROJECT_PATH_SLUG__
+        app.gitlab.com/env: __CI_ENVIRONMENT_SLUG__
+    spec:
+      containers:
+      - name: angular
+        image: __CI_REGISTRY_IMAGE__:__VERSION__
+        ports:
+        - containerPort: 80
+          name: angular
+        imagePullPolicy: Always
+---

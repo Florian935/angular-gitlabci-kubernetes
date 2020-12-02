@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: app-ingress
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "nginx"
+  labels:
+    app: ingress-__CI_PROJECT_NAME__
+    ref: __CI_ENVIRONMENT_SLUG__
+spec:
+  tls:
+    - hosts:
+        - __CI_PROJECT_NAME__-__CI_ENVIRONMENT_SLUG__.__KUBE_INGRESS_BASE_DOMAIN__
+      secretName: tls-demo-secret
+  rules:
+    - host: __CI_PROJECT_NAME__-__CI_ENVIRONMENT_SLUG__.__KUBE_INGRESS_BASE_DOMAIN__
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: angular
+              servicePort: 80
+---
