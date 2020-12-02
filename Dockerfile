@@ -3,7 +3,7 @@ FROM node:latest as node
 WORKDIR /app
 COPY . .
 RUN npm install
-RUN npm run buildProds
+RUN npm run buildProd
 
 # stage 2: copy builded application into nginx container
 FROM nginx:latest
