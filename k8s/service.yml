@@ -6,11 +6,13 @@ metadata:
     app: angular-__CI_PROJECT_NAME__
   name: angular
 spec:
-  clusterIP: None
+  type: clusterIP
+  # clusterIP: None
   ports:
     - name: angular
       port: 80
       targetPort: 80
+      protocol: TCP
   selector:
     app: angular-__CI_PROJECT_NAME__
 ---
