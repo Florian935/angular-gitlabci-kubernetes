@@ -11,7 +11,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: '443'
 spec:
-  type: LoadBalancer
+  clusterIP: None
   ports:
   - name: http
     port: 80

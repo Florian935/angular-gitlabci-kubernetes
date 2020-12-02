@@ -10,4 +10,4 @@ FROM nginx:latest
 
 COPY --from=node /app/dist/angular-dockerization /usr/share/nginx/html
 #Copy default nginx configuration
-# COPY ./nginx-custom.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx-custom.conf /etc/nginx/conf.d/default.conf
