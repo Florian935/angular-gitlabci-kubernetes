@@ -54,7 +54,7 @@ Deploy_to_Kubernetes:
     - kubectl apply -f k8s/
   environment:
     name: production
-    url: http://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+    url: https://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
   only:
     - master
   when: manual
