@@ -6,13 +6,19 @@ metadata:
     app: angular-__CI_PROJECT_NAME__
   name: angular
 spec:
-  type: clusterIP
+  type: ClusterIP
   clusterIP: None
   ports:
     - name: angular
+      port: 443
+      targetPort: 443
+      protocol: TCP
+      nodePort: 443
+    - name: angular-2
       port: 80
       targetPort: 80
       protocol: TCP
+      nodePort: 80
   selector:
     app: angular-__CI_PROJECT_NAME__
 ---
