@@ -7,7 +7,7 @@ metadata:
   name: angular
 spec:
   type: clusterIP
-  # clusterIP: None
+  clusterIP: None
   ports:
     - name: angular
       port: 80
