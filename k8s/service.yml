@@ -6,7 +6,6 @@ metadata:
     app: angular-__CI_PROJECT_NAME__
   name: angular
 spec:
-  type: ClusterIP
   clusterIP: None
   ports:
     - name: angular
