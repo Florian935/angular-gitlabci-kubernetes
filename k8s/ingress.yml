@@ -6,6 +6,7 @@ metadata:
   annotations:
     kubernetes.io/tls-acme: "true"
     kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
   labels:
     app: ingress-__CI_PROJECT_NAME__
     ref: __CI_ENVIRONMENT_SLUG__
