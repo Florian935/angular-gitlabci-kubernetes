@@ -1,0 +1,84 @@
+variables:
+  #PROJECT_NAME: kubernetes-0.0.1-SNAPSHOT
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+
+
+stages:
+  - build
+  - test
+  - docker_build
+  - deploy_to_k8s
+
+# Build and Test are two different jobs in the same stage.
+# This allows us to run these two sequentially and making build faster
+
+# Job 1:
+Build:
+  stage: build
+  # Maven image on which this would be run to build the project
+  image: node:latest
+  before_script:
+    - npm install
+  script:
+    - npm run build --prod
+  only:
+    changes:
+      - "src/*"
+  tags:
+    - docker
+
+Docker_build:
+  image: docker:18.09
+  services:
+    - docker:18.09-dind
+  stage: docker_build
+  # This command is run before actual stages start running
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker pull ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA} || true
+    - docker build -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA} .
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
+  #only:
+  #  changes:
+  #    - "src/*"
+  #    - "Dockerfile"
+  #    - ".gitlab-ci.yml"
+
+# Deploy_to_Kubernetes:
+#   stage: deploy_to_k8s
+#   image: google/cloud-sdk
+#   script:
+#     - kubectl version
+#     - ensure_namespace
+#     - sed_files
+#     - kubectl apply -f k8s/
+#   environment:
+#     name: production
+#     url: https://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+#   only:
+#     - master
+#   when: manual
+
+# .helper_functions: &helper_functions_template |
+#   function sed_files() {
+#     echo "Applying SED on Deployment, Service and Ingress yaml file"
+#     sed -i "s/__CI_ENVIRONMENT_SLUG__/${CI_ENVIRONMENT_SLUG}/" k8s/*.yml
+#     sed -i "s/__CI_PROJECT_PATH_SLUG__/${CI_PROJECT_PATH_SLUG}/" k8s/*.yml
+#     sed -i "s/__CI_PROJECT_NAME__/${CI_PROJECT_NAME}/" k8s/*.yml
+#     sed -i "s/__CI_ENVIRONMENT_SLUG__/${CI_ENVIRONMENT_SLUG}/" k8s/*.yml
+#     sed -i "s~__CI_REGISTRY_IMAGE__~${CI_REGISTRY_IMAGE}~" k8s/*.yml
+#     sed -i "s/__KUBE_INGRESS_BASE_DOMAIN__/${KUBE_INGRESS_BASE_DOMAIN}/" k8s/*.yml
+#     sed -i "s/__VERSION__/${CI_COMMIT_SHORT_SHA}/" k8s/*.yml
+#   }
+
+#   function ensure_namespace() {
+#     echo "Setting default namespace to: $KUBE_NAMESPACE ..."
+#     kubectl get namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+#     kubectl config set-context --current --namespace="$KUBE_NAMESPACE"
+#   }
+
+# before_script:
+#   - *helper_functions_template
+
