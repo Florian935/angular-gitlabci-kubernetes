@@ -25,8 +25,6 @@ Build:
   only:
     changes:
       - "src/*"
-  tags:
-    - docker
 
 Docker_build:
   image: docker:18.09
