@@ -62,6 +62,7 @@ Deploy_to_Kubernetes:
 .helper_functions: &helper_functions_template |
   function sed_files() {
     echo "Applying SED on Deployment, Service and Ingress yaml file"
+    echo $CI_REGISTRY_IMAGE
     sed -i "s/__CI_ENVIRONMENT_SLUG__/${CI_ENVIRONMENT_SLUG}/" k8s/*.yml
     sed -i "s/__CI_PROJECT_PATH_SLUG__/${CI_PROJECT_PATH_SLUG}/" k8s/*.yml
     sed -i "s/__CI_PROJECT_NAME__/${CI_PROJECT_NAME}/" k8s/*.yml
