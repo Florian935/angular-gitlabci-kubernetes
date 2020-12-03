@@ -6,19 +6,12 @@ metadata:
     app: angular-__CI_PROJECT_NAME__
     k8s-addon: ingress-nginx.addons.k8s.io
   name: angular
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: 'tcp'
-    service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: '443'
 spec:
   clusterIP: None
   ports:
   - name: http
     port: 80
     targetPort: 80
-  - name: https
-    port: 443
-    targetPort: 443
   selector:
     app: angular-__CI_PROJECT_NAME__
 ---
