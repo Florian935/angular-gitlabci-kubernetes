@@ -4,7 +4,6 @@ kind: Service
 metadata:
   labels:
     app: angular-__CI_PROJECT_NAME__
-    k8s-addon: ingress-nginx.addons.k8s.io
   name: angular
 spec:
   clusterIP: None
